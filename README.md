@@ -8,15 +8,32 @@
 
 ## 🚀 Quick Start
 
-**One-liner Docker:** `docker-compose -f Dockerfile-compose.yml up -d && echo "App ready at http://localhost:8000"`
+**One-liner install (automated setup + web app launch):**
 
-Or deploy to Heroku (10 minutes):
+**macOS/Linux:**
 ```bash
-heroku create your-app-name && \
-heroku addons:create heroku-postgresql:standard-0 && \
-git push heroku main && \
-heroku open
+bash <(curl -s https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.sh)
 ```
+
+**Windows PowerShell:**
+```powershell
+powershell -ExecutionPolicy Bypass -Command "& {iwr https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.ps1 | iex}"
+```
+
+**Windows Command Prompt:**
+```cmd
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.ps1 -OutFile install.ps1; powershell -ExecutionPolicy Bypass -File install.ps1"
+```
+
+**What it does:**
+- ✓ Checks Docker installation
+- ✓ Clones repository
+- ✓ Starts PostgreSQL, Elasticsearch, Nginx
+- ✓ Runs migrations
+- ✓ Loads 500+ sample citations
+- ✓ Opens web app at http://localhost:8000
+
+**Requirements:** Docker Desktop only (everything else is automatic)
 
 ## ✨ Features
 
