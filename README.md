@@ -8,7 +8,15 @@
 
 ## 🚀 Quick Start
 
-**One-liner install:** `pip install -r akdamia_requirements.txt && docker-compose up -d && python manage.py migrate && python manage.py load_sample && python manage.py runserver`
+**One-liner Docker:** `docker-compose -f Dockerfile-compose.yml up -d && echo "App ready at http://localhost:8000"`
+
+Or deploy to Heroku (10 minutes):
+```bash
+heroku create your-app-name && \
+heroku addons:create heroku-postgresql:standard-0 && \
+git push heroku main && \
+heroku open
+```
 
 ## ✨ Features
 
