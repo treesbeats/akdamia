@@ -1,0 +1,18 @@
+[{
+  "id": 1,
+  "title": "Sample Paper A",
+  "authors": ["First Name Last Name", "Another Author"],
+  "year": 2020,
+  "abstract": "This paper cites First Name Last Name in its related work.",
+  "citations": ["First Name Last Name, 2018", "Someone Else, 2019"],
+  "insights": ["Mentions First Name Last Name in context of method X."]
+},
+{
+  "id": 2,
+  "title": "Sample Paper B",
+  "authors": ["Different Author"],
+  "year": 2021,
+  "abstract": "No mention of target person.",
+  "citations": ["Someone Else, 2019"],
+  "insights": []
+}]
