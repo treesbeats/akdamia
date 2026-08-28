@@ -48,12 +48,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: akdamia-web
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             gunicorn akdamia.wsgi:application --bind 0.0.0.0:8000 --workers 4"
-    ports:
-      - "8000:8000"
     environment:
       DEBUG: ${DEBUG:-False}
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
@@ -64,6 +58,12 @@ services:
       DB_PORT: 5432
       ELASTICSEARCH_HOST: elasticsearch:9200
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      LOAD_SAMPLE_DATA: ${LOAD_SAMPLE_DATA:-false}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME:-}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-admin@akdamia.local}
+    ports:
+      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy

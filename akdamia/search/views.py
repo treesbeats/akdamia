@@ -1,6 +1,3 @@
-# Django views for the search app with API endpoint
-# Place this in akdamia/search/views.py
-
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods

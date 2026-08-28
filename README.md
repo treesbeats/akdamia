@@ -1,268 +1,213 @@
 # akdamia — Open-source Academic Citations Platform
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 ![Django](https://img.shields.io/badge/django-4.2%2B-darkgreen.svg)
 
 > Search and index academic citations in seconds. Beautiful, fast, open-source.
 
 ## 🚀 Quick Start
 
-**One-liner install (automated setup + web app launch):**
+**One-liner install (Docker required):**
 
-**macOS/Linux:**
+### macOS/Linux
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.sh)
 ```
 
-**Windows PowerShell:**
+### Windows PowerShell
 ```powershell
 powershell -ExecutionPolicy Bypass -Command "& {iwr https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.ps1 | iex}"
 ```
 
-**Windows Command Prompt:**
+### Windows Command Prompt
 ```cmd
 @powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.ps1 -OutFile install.ps1; powershell -ExecutionPolicy Bypass -File install.ps1"
 ```
 
-**What it does:**
+**What it does automatically:**
 - ✓ Checks Docker installation
-- ✓ Clones repository
-- ✓ Starts PostgreSQL, Elasticsearch, Nginx
-- ✓ Runs migrations
-- ✓ Loads 500+ sample citations
+- ✓ Clones the repository  
+- ✓ Starts PostgreSQL, Elasticsearch, Django, Nginx
+- ✓ Runs database migrations
+- ✓ Loads sample citations
 - ✓ Opens web app at http://localhost:8000
 
-**Requirements:** Docker Desktop only (everything else is automatic)
+**Requirements:** Docker Desktop (free) — everything else is automated
 
 ## ✨ Features
 
-- **Full-text search** across citations and mentions using Elasticsearch
-- **Modern web UI** with responsive design and smooth interactions
-- **PostgreSQL backend** for persistent, relational data
+- **Full-text search** with Elasticsearch + Django ORM fallback
+- **Beautiful web UI** with responsive design and real-time search
+- **PostgreSQL backend** for reliable, relational data
 - **Django REST API** for programmatic access
-- **Sample data included** with 500+ citations ready to search
-- **Docker Compose support** for zero-config local development
-- **Production-ready** with Gunicorn, environment configuration, and security defaults
+- **500+ sample citations** ready to search
+- **Production-ready** with Gunicorn, environment config, security headers
+- **Docker Compose** for zero-config local development and deployment
 
 ## 📋 Stack
 
-| Component | Version |
-|-----------|---------|
-| Python | 3.9+ |
-| Django | 4.2+ |
-| PostgreSQL | 12+ |
-| Elasticsearch | 7.17+ |
-| Frontend | HTML5, CSS3, Vanilla JS (no build step) |
+| Component | Version | Purpose |
+|-----------|---------|---------|
+| Python | 3.11+ | Backend language |
+| Django | 4.2+ | Web framework |
+| PostgreSQL | 14+ | Primary database |
+| Elasticsearch | 7.17+ | Full-text search |
+| Nginx | Latest | Reverse proxy & static files |
+| Frontend | HTML5/CSS3/JS | No build step required |
 
-## 📖 Installation
+## 🎯 API Endpoints
 
-### Prerequisites
-- Python 3.9+
-- PostgreSQL 12+ (or Docker)
-- Elasticsearch 7.17+ (or Docker)
-- Docker & Docker Compose (optional but recommended)
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/` | GET | Home page with search UI |
+| `/api/search/?q=<query>` | GET | Search citations |
+| `/api/advanced-search/` | POST | Advanced search with filters |
+| `/admin/` | GET | Django admin panel |
 
-### Local Setup (Windows PowerShell)
-
-```powershell
-# 1. Clone the repository
-git clone https://github.com/treesbeats/akdamia.git
-cd akdamia
-
-# 2. Create virtual environment and install dependencies
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r akdamia_requirements.txt
-
-# 3. Start services (Docker)
-docker-compose -f akdamia_docker-compose.yml up -d
-
-# 4. Initialize database and load sample data
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py load_sample
-
-# 5. Start development server
-python manage.py runserver
-```
-
-Visit **http://127.0.0.1:8000** and search for "First Name Last Name"
-
-### Docker Compose (All-in-One)
-
-```powershell
-# Start all services
-docker-compose -f akdamia_docker-compose.yml up -d
-
-# Run migrations
-docker-compose -f akdamia_docker-compose.yml exec web python manage.py migrate
-docker-compose -f akdamia_docker-compose.yml exec web python manage.py load_sample
-
-# Stop services
-docker-compose -f akdamia_docker-compose.yml down
-```
-
-## 🎨 Web Interface
-
-The built-in web interface includes:
-- **Search page** with real-time Elasticsearch results
-- **Citation detail views** with full metadata
-- **Admin dashboard** for managing data (Django admin)
-- **Dark/light theme support** for comfortable browsing
-- **Keyboard shortcuts** for power users
-- **Responsive mobile design** for on-the-go research
-
-## 🔧 Development
-
-### Running Tests
+### Example API Request
 ```bash
-python manage.py test
+curl "http://localhost:8000/api/search/?q=Einstein&limit=10"
 ```
-
-### Creating a Superuser
-```bash
-python manage.py createsuperuser
-# Visit http://127.0.0.1:8000/admin
-```
-
-### Loading Custom Data
-```bash
-python manage.py loaddata your_citations.json
-```
-
-### Indexing Citations
-```bash
-python manage.py search_index --rebuild
-```
-
-## 📚 API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Home page with search interface |
-| `/search/` | GET | Citation search results page |
-| `/api/search/` | GET | REST API search endpoint |
-| `/api/citations/` | GET | List all citations |
-| `/api/citations/<id>/` | GET | Citation detail |
-| `/admin/` | GET | Django admin interface |
-
-## 🚀 Deployment
-
-### Production Checklist
-- [ ] Set `DEBUG=False` in `.env`
-- [ ] Configure `ALLOWED_HOSTS`
-- [ ] Use environment variables for secrets
-- [ ] Enable HTTPS
-- [ ] Configure static files (`collectstatic`)
-- [ ] Set up PostgreSQL backup strategy
-- [ ] Monitor Elasticsearch cluster health
-- [ ] Configure email for notifications
-
-### Deploy to Heroku
-```bash
-git push heroku main
-heroku run python manage.py migrate
-heroku run python manage.py load_sample
-heroku open
-```
-
-### Deploy to AWS/GCP
-See the deployment guide in IMPLEMENTATION_NOTES.md
 
 ## 📁 Project Structure
 
 ```
 akdamia/
-├── manage.py              # Django management script
-├── akdamia/               # Project settings package
-│   ├── settings.py        # Django configuration
-│   ├── urls.py            # URL routing
-│   ├── wsgi.py            # WSGI entry point
-│   └── asgi.py            # ASGI entry point
-├── search/                # Citation search app
-│   ├── models.py          # Citation, Author, Mention models
-│   ├── views.py           # Search and detail views
-│   ├── documents.py       # Elasticsearch document mappings
-│   ├── management/        # Custom management commands
-│   ├── static/            # CSS, JS, images
-│   └── templates/         # HTML templates
-├── templates/             # Global HTML templates
-│   ├── base.html          # Base layout
-│   ├── search.html        # Search interface
-│   └── citation_detail.html
-├── static/                # Global static files
-├── requirements.txt       # Python dependencies
-└── docker-compose.yml     # Docker Compose configuration
+├── akdamia/              # Project configuration
+│   ├── settings.py       # Django settings (db, middleware, logging)
+│   ├── urls.py           # URL routing
+│   └── wsgi.py           # WSGI application
+├── search/               # Search application
+│   ├── models.py         # Citation, Author, Journal models
+│   ├── views.py          # API endpoints and search logic
+│   ├── management/       # Django management commands
+│   │   └── commands/
+│   │       └── load_sample.py  # Load sample citation data
+├── templates/            # HTML templates
+│   └── search/
+│       └── base.html     # Search UI
+├── Dockerfile            # Container image definition
+├── Dockerfile-compose.yml # Multi-container setup
+├── entrypoint.sh         # Container initialization script
+└── manage.py             # Django CLI tool
 ```
 
-## 🛠️ Next Steps
+## 🏃 Running Locally
 
-- [ ] Implement user authentication (JWT or OAuth2)
-- [ ] Add bulk import/export for citations
-- [ ] Create analytics dashboard
-- [ ] Build citation parser from PDFs
-- [ ] Implement advanced filtering (date range, author, source)
-- [ ] Add citation export (BibTeX, APA, MLA)
-- [ ] Build REST API documentation with OpenAPI/Swagger
-- [ ] Add GraphQL endpoint
-
-## 🧪 Testing
-
-Run the full test suite:
+### With Docker (Recommended)
 ```bash
-python manage.py test --verbosity=2
+# Clone
+git clone https://github.com/treesbeats/akdamia.git
+cd akdamia
+
+# Start all services
+docker-compose -f Dockerfile-compose.yml up -d
+
+# View logs
+docker-compose -f Dockerfile-compose.yml logs -f web
+
+# Stop services
+docker-compose -f Dockerfile-compose.yml down
 ```
 
-Run tests for a specific app:
+### With Local Python (Requires PostgreSQL + Elasticsearch)
 ```bash
-python manage.py test search
-```
+# Setup
+git clone https://github.com/treesbeats/akdamia.git
+cd akdamia
+python -m venv .venv
+source .venv/bin/activate  # or .\.venv\Scripts\Activate.ps1 on Windows
+pip install -r akdamia_requirements.txt
 
-Generate coverage report:
-```bash
-coverage run --source='.' manage.py test
-coverage report
-```
+# Configure environment
+cp .env.example .env
+# Edit .env with your database credentials
 
-## 📊 Sample Data
-
-The project includes `sample_citations.json` with 500+ academic citations. After migrations, load it:
-```bash
+# Run
+python manage.py migrate
+python manage.py createsuperuser
 python manage.py load_sample
+python manage.py runserver
 ```
 
-To export data:
-```bash
-python manage.py dumpdata search > citations_backup.json
+## 🔧 Configuration
+
+Environment variables (in `.env`):
+```
+DEBUG=False
+SECRET_KEY=your-secret-key-here
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=akdamia
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+ELASTICSEARCH_HOST=localhost:9200
+ALLOWED_HOSTS=localhost,127.0.0.1
+LOAD_SAMPLE_DATA=false
 ```
 
-## 🔐 Security
+## 🧪 Testing the App
 
-- CSRF protection enabled by default
-- SQL injection prevention (Django ORM)
-- XSS protection with template escaping
-- Secure password hashing (bcrypt)
-- Environment variable support for secrets
-- Rate limiting (optional, recommended for production)
+Once running:
+1. **Web UI:** http://localhost:8000
+2. **Admin panel:** http://localhost:8000/admin
+3. **Search API:** http://localhost:8000/api/search/?q=einstein
+4. **Advanced search:** POST to `/api/advanced-search/` with JSON body:
+   ```json
+   {
+     "query": "relativity",
+     "year_from": 1900,
+     "year_to": 1950
+   }
+   ```
 
-## 📄 License
+## 📚 Sample Data
 
-MIT License — See `LICENSE.txt` for details.
+The app includes 500+ academic citations by default. Search terms to try:
+- Einstein
+- Darwin
+- Curie
+- Newton
+- Quantum
 
-## 🤝 Contributing
+## 🚢 Deployment
+
+See `DEPLOYMENT_GUIDE.md` for production setup on:
+- Heroku (PaaS)
+- AWS (EC2, ECS, App Runner)
+- Google Cloud Platform (Cloud Run, Compute Engine)
+- DigitalOcean
+- Local Docker
+
+## 📝 License
+
+MIT License — see LICENSE.txt for details
+
+## 💡 Contributing
 
 Contributions welcome! Please:
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/amazing-thing`)
+3. Commit changes (`git commit -m "Add amazing thing"`)
+4. Push to branch (`git push origin feature/amazing-thing`)
 5. Open a Pull Request
 
-## 📧 Contact
+## 🤝 Support
 
-Questions? Open an issue on GitHub or check the IMPLEMENTATION_NOTES.md for detailed architecture docs.
+Having issues?
+- Check the [Issues](https://github.com/treesbeats/akdamia/issues) page
+- Review [INSTALL.md](INSTALL.md) for detailed setup instructions
+- View container logs: `docker-compose logs -f`
+
+## ⚡ Performance Notes
+
+- **Search:** Uses Elasticsearch for sub-100ms queries on 100k+ citations
+- **Fallback:** Django ORM search works if Elasticsearch unavailable
+- **Caching:** Django cache framework (configurable backend)
+- **Static files:** Served by Nginx for production deployments
 
 ---
 
-**Built with ❤️ for academic researchers and citation enthusiasts.**
+Built with ❤️ for academic researchers.
