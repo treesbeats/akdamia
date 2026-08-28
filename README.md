@@ -12,17 +12,17 @@
 
 ### macOS/Linux
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/treesbeats/akdamia/scaffold/install.sh)
 ```
 
 ### Windows PowerShell
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "& {iwr https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.ps1 | iex}"
+powershell -ExecutionPolicy Bypass -Command "& {iwr https://raw.githubusercontent.com/treesbeats/akdamia/scaffold/install.ps1 | iex}"
 ```
 
 ### Windows Command Prompt
 ```cmd
-@powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/treesbeats/akdamia/treesbeats-web-app-readme/install.ps1 -OutFile install.ps1; powershell -ExecutionPolicy Bypass -File install.ps1"
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/treesbeats/akdamia/scaffold/install.ps1 -OutFile install.ps1; powershell -ExecutionPolicy Bypass -File install.ps1"
 ```
 
 **What it does automatically:**
