@@ -1,6 +1,5 @@
 # akdamia One-Line Installer for Windows PowerShell
 # Usage: powershell -ExecutionPolicy Bypass -File install.ps1
-# Downloads akdamia and launches the web app in seconds
 
 $ErrorActionPreference = "Stop"
 
@@ -17,12 +16,11 @@ try {
     docker --version | Out-Null
     Write-Host "✓ Docker found" -ForegroundColor Green
 } catch {
-    Write-Host "⚠️  Docker not found!" -ForegroundColor Yellow
+    Write-Host "✗ Docker not found" -ForegroundColor Red
     Write-Host ""
     Write-Host "Please install Docker Desktop:" -ForegroundColor Yellow
     Write-Host "https://www.docker.com/products/docker-desktop" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "Then run this script again." -ForegroundColor Yellow
     Read-Host "Press Enter to exit"
     exit 1
 }
@@ -47,18 +45,51 @@ if (-not (Test-Path "Dockerfile-compose.yml")) {
     git checkout treesbeats-web-app-readme
 }
 
+# Load environment variables
+if (-not (Test-Path ".env")) {
+    Write-Host "📝 Creating .env file..." -ForegroundColor Cyan
+    if (Test-Path ".env.example") {
+        Copy-Item ".env.example" ".env"
+    } else {
+        Add-Content ".env" "SECRET_KEY=django-insecure-change-this-in-production"
+    }
+}
+
 Write-Host "🐳 Starting Docker containers..." -ForegroundColor Cyan
 docker-compose -f Dockerfile-compose.yml up -d
 
 Write-Host ""
-Write-Host "⏳ Waiting for services to start..." -ForegroundColor Cyan
-Start-Sleep -Seconds 10
+Write-Host "⏳ Waiting for services to be healthy..." -ForegroundColor Cyan
 
-Write-Host "🔧 Running database migrations..." -ForegroundColor Cyan
-docker-compose exec -T web python manage.py migrate
+# Wait for web service to be healthy
+$maxAttempts = 60
+$attempt = 0
+$healthy = $false
 
-Write-Host "📚 Loading sample data..." -ForegroundColor Cyan
-docker-compose exec -T web python manage.py load_sample
+while ($attempt -lt $maxAttempts) {
+    try {
+        $response = docker-compose -f Dockerfile-compose.yml exec -T web curl -f http://localhost:8000/admin/ 2>$null
+        if ($response) {
+            Write-Host "✓ Web service is healthy" -ForegroundColor Green
+            $healthy = $true
+            break
+        }
+    } catch {
+        # Silently continue
+    }
+    
+    Write-Host "   Waiting for web service... ($($attempt+1)/$maxAttempts)" -ForegroundColor Yellow
+    Start-Sleep -Seconds 2
+    $attempt++
+}
+
+if (-not $healthy) {
+    Write-Host "✗ Web service failed to start" -ForegroundColor Red
+    Write-Host "Logs:" -ForegroundColor Yellow
+    docker-compose -f Dockerfile-compose.yml logs web | Select-Object -Last 20
+    Read-Host "Press Enter to exit"
+    exit 1
+}
 
 Clear-Host
 
@@ -76,5 +107,6 @@ Write-Host ""
 Write-Host "Try searching for: Einstein, Darwin, Curie, Newton" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "⏹️  To stop: docker-compose -f Dockerfile-compose.yml down" -ForegroundColor Yellow
+Write-Host "📋 To view logs: docker-compose -f Dockerfile-compose.yml logs -f web" -ForegroundColor Yellow
 Write-Host ""
 Read-Host "Press Enter to continue"

@@ -1,6 +1,3 @@
-# Django models for the search app
-# Place this in akdamia/search/models.py
-
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse

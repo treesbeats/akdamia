@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     curl \
     postgresql-client \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy Python dependencies from builder
@@ -37,6 +38,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 # Copy application code
 COPY . .
+
+# Make entrypoint executable
+RUN chmod +x entrypoint.sh
 
 # Create required directories
 RUN mkdir -p /app/logs /app/media /app/staticfiles
@@ -52,5 +56,6 @@ USER appuser
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/admin/ || exit 1
 
-# Default command
+# Set entrypoint and default command
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "akdamia.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "60"]

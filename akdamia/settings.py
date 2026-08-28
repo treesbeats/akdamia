@@ -1,6 +1,3 @@
-# Fixed Django settings for akdamia project
-# Merge this into akdamia/akdamia/settings.py
-
 import os
 from pathlib import Path
 from decouple import config, Csv
